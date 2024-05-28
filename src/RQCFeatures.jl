@@ -1,5 +1,6 @@
 using Missings
 using NCDatasets
+using Base.Threads 
 
 center_weight::Float64 = 0
 
@@ -465,7 +466,7 @@ function process_single_file(cfrad::NCDataset, argfile_path::String;
     PGG_Completed_Flag = false 
     NCP_Completed_Flag = false 
 
-    for (i, task) in enumerate(tasks)
+    @threads for (i, task) in collect(enumerate(tasks))
 
         ###Test to see if task involves a spatial parameter function call) 
         ###A match implies spatial parameter, otherwise we assume it is just 
@@ -608,7 +609,7 @@ function process_single_file(cfrad::NCDataset, tasks::Vector{String}, weight_mat
     PGG_Completed_Flag = false 
     NCP_Completed_Flag = false 
 
-    for (i, task) in enumerate(tasks)
+    @threads for (i, task) in collect(enumerate(tasks))
 
         ###Test to see if task involves a spatial parameter function call) 
         ###A match implies spatial parameter, otherwise we assume it is just 
@@ -622,7 +623,7 @@ function process_single_file(cfrad::NCDataset, tasks::Vector{String}, weight_mat
         ###Where PRM is the 3 lettter abbreviation of the parameter
         ###and the full cfradial is passed because oftentimes multiple fields are requried 
         regex_match = match(func_regex, task) 
-        
+        print("OK")
         
         ###If we get a match, we have a spatial parameter function 
         ###Weights are only important for these values 
